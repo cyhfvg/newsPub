@@ -1,0 +1,22 @@
+@hostname = localhost
+@port = 80
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@projectPath = {{host}}/newsPub
+
+###
+GET http://{{projectPath}}/index.php HTTP/1.1
+
+###
+
+GET http://localhost/newsPub/index.php HTTP/1.1
+
+###
+
+POST http://localhost/newsPub/index.php HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2019 18:27:50  GMT"
+}
