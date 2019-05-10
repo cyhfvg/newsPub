@@ -1,20 +1,37 @@
 <?php
-function get_request_type() {
-    $request_type = '';
+function get_request() {
+    $result = array(
+        "type" => '',
+        "body" => array()
+    );
     if (is_get()) {
-        $request_path = '_get';
+        // $request_path = 'get_';
+        // $request = $_GET;
+        $result['type'] = 'get_';
+        $result['body'] = get_request_body();
     } else if(is_post()) {
-        $request_path = '_post';
+        $result['type'] = 'post_';
+        $result['body'] = get_request_body();
     } else if (is_patch()) {
-        $request_path = '_patch';
+        $result['type'] = 'patch_';
+        $result['body'] = get_request_body();
     } else if (is_delete()) {
-        $request_path = '_delete';
+        $result['type'] = 'delete_';
+        $result['body'] = get_request_body();
     } else if(is_put()) {
-        $request_path = '_put';
+        $result['type'] = 'put_';
+        // parse_str(file_get_contents('php://input'), $_PUT);
+        $result['body'] = get_request_body();
     }
-    return $request_path;
+    return $result;
 }
 
+function get_request_body() {
+    $data = file_get_Contents('php://input');
+    $data_obj = json_decode($data);
+    $data_arr = json_decode($data, true);
+    return $data_arr;
+}
 function is_post() {
     //创建 create
     return isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) == 'POST';

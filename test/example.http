@@ -1,14 +1,10 @@
-@hostname = localhost
-@port = 80
-@host = {{hostname}}:{{port}}
-@contentType = application/json
-@projectPath = {{host}}/newsPub
+GET http://localhost/newsPub/index.php HTTP/1.1
 
 ###
-GET http://{{projectPath}}/index.php HTTP/1.1
-
+GET https://example.com/comments
+    ?page=2
+    &pageSize=10
 ###
-
 GET http://localhost/newsPub/index.php HTTP/1.1
 
 ###

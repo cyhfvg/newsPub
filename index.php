@@ -1,9 +1,6 @@
 <?php
-// include_once(dirname(__FILE__).'/util/url.php');
-// include_once(dirname(__FILE__).'/util/request.php');
-//重定向至登录页面
-// $url = get_cur_url().'/view/login.php';
-// do_request($url,array());
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 ?>
 
 <?php
@@ -20,25 +17,31 @@ define('APP_DEBUG', TRUE);
 include_once BASE_PATH.'/config/config.php';
 //路由控制
 // $router = include_once BASE_PATH.'/router/router.php';
-include_once BASE_PATH.'/router/router.php';
+$router = include_once BASE_PATH.'/router/router.php';
 // var_dump($router);
 
-$uri = $_SERVER['PHP_SELF'];
-$url = explode('/', $uri);
-$url[1] = '';
-// var_dump($url);
-array_shift($url);
+// //获取uri
+// $uri = $_SERVER['REQUEST_URI'];
+// $url = explode('/', $uri);
+// $project = $url[1];
+// $url[1] = '';
+// // var_dump($url);
+// array_shift($url);
 
-$request_path = implode('/', $url);
-$request_path = str_replace('index.php', '', $request_path);
-// echo $request_path.'<br/>';
-// $request_query = getCurrentQuery();
+// //获取请求url
+// $request_path = implode('/', $url);
+// $request_path = str_replace('index.php', '', $request_path);
+$req_path = get_request_path();
+$request_path = $req_path['request_path'];
+$project = $req_path['project'];
+echo $request_path.'<br/>';
 if (array_key_exists($request_path, $router)) {
     $module_file = BASE_PATH.$router[$request_path]['file_name'];
     $class_name = $router[$request_path]['class_name'];
     $method_name = $router[$request_path]['method_name'];
     include BASE_PATH.'/util/rest.php';
-    $method_name = $method_name.get_request_type();
+    $request = get_request();
+    $method_name = $request['type'].$method_name;
     // echo $module_file.':'.$class_name.'->'.$method_name.'<br/>';
     if (file_exists($module_file)) {
         include $module_file;
@@ -47,7 +50,8 @@ if (array_key_exists($request_path, $router)) {
             die('调用方法不存在!');
         } else {
             if (is_callable(array($obj_module, $method_name))) {
-                $obj_module->$method_name('hello ', 'world');
+                $base_url = 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].'/'.$project;
+                $obj_module->$method_name($base_url, $request['body']);
             }
         }
     } else {
@@ -55,5 +59,30 @@ if (array_key_exists($request_path, $router)) {
     }
 } else {
     echo "页面不存在！";
+}
+function get_request_path() {
+    $req_path = array(
+        "project" => "",
+        "request_path" => ""
+    );
+    //获取uri
+    $uri = $_SERVER['REQUEST_URI'];
+
+    $temp = explode('?', $uri);
+    $uri = $temp[0];
+
+    $url = explode('/', $uri);
+    $project = $url[1];
+    $req_path['project'] = $url[1];
+    $url[1] = '';
+    // var_dump($url);
+    array_shift($url);
+
+    //获取请求url
+    $request_path = implode('/', $url);
+    $request_path = str_replace('index.php', '', $request_path);
+
+    $req_path['request_path'] = $request_path;
+    return $req_path;
 }
 ?>

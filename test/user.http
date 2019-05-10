@@ -1,0 +1,32 @@
+POST {{baseUrl}}/account HTTP/1.1
+{{contentType}}
+
+{
+    "user_name": "zhangguangz",
+    "user_password": "123456",
+    "user_sex": "男",
+    "user_age": "23",
+    "user_phone": "12345678910",
+    "user_email": "zgz@cslg.edu.cn",
+    "user_job": "student",
+    "user_address": "test_address"
+}
+
+###
+GET {{baseUrl}}/account HTTP/1.1
+{{contentType}}
+
+{
+    "user_name": "shabulaji",
+    "password": "123456"
+}
+
+###
+PUT {{baseUrl}}/account HTTP/1.1
+{{contentType}}
+
+{
+    "sex": "女",
+    "phone": "12345543211",
+    "address": "cslg"
+}
