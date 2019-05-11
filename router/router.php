@@ -9,6 +9,11 @@ return array (
         'file_name' => '/controller/account.php',
         'class_name' => 'User',
         'method_name' => 'user'
+    ),
+    '/news' => array (
+        'file_name' => '/controller/news.php',
+        'class_name' => 'News',
+        'method_name' => 'news'
     )
 );
 ?>

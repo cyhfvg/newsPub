@@ -1,9 +1,19 @@
 <?php
 include_once BASE_PATH.'/util/mysql.php';
+/**
+ * User 类提供相应各种请求类型的有关 user 的对应处理方法
+ * @method get_user(@param String $base_url, @param array $body)
+ * @method post_user(@param String $base_url, @param array $body)
+ * @method put_user(@param String $base_url, @param array $body)
+ * @method patch_user(@param String $base_url, @param array $body)
+ */
 class User {
-
     /**
+     * 方法响应GET方式请求/account
+     * 获取user信息
      * 
+     * @param String $base_url 项目基准url http://localhost/project
+     * @param array $body 请求体
      */
     function get_user($base_url, $body) {
         $conn = get_connection();
@@ -58,7 +68,11 @@ class User {
     }
 
     /**
+     * 方法响应POST方式请求/account
+     * 新增user
      * 
+     * @param String $base_url 项目基准url http://localhost/project
+     * @param array $body 请求体
      */
     function post_user($base_url, $body) {
         $conn = get_connection();
@@ -89,7 +103,11 @@ class User {
     }
 
     /**
+     * 方法响应PUT方式请求/account
+     * 更新user信息
      * 
+     * @param String $base_url 项目基准url http://localhost/project
+     * @param array $body 请求体
      */
     function put_user($base_url, $body) {
         $conn = get_connection();
@@ -102,6 +120,7 @@ class User {
             $sql = $sql . "$k = '$v',"; 
             echo "$k"."=>"."$v"."<br/>";
         }
+        //TODO: 需要修改where条件为动态条件
         $sql = rtrim($sql, ',')." where user_name='shabulaji';";
         echo $sql;
         $conn->query($sql);
@@ -109,7 +128,12 @@ class User {
     }
 
     /**
+     * 方法响应PATCH方式请求/account
+     * 更新user信息
+     * !方法弃用
      * 
+     * @param String $base_url 项目基准url http://localhost/project
+     * @param array $body 请求体
      */
     function patch_user() {
 

@@ -1,7 +1,9 @@
 <?php
+
 /**
  * 从配置文件中，获取指定的mysql数据库的一个连接
  * 配置文件位于[Project_Site]/config/config.php
+ * 
  * @return object $conn mysql连接对象
  */
 function get_connection() {
@@ -21,7 +23,7 @@ function get_connection() {
     } else {
         //获得连接成功 设置字符集为utf8
         mysqli_set_charset($conn, 'utf8');
-        echo "<br/>连接成功<br/>";
+        echo "<br/>/util/mysql.php === 连接成功<br/>";
     }
     return $conn;
 }

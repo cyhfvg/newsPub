@@ -1,0 +1,112 @@
+<?php
+//引入数据库操作辅助函数
+include_once BASE_PATH.'/util/mysql.php';
+
+/**
+ * News 类 提供关于各种 http 请求的对应处理函数
+ * @method get_new(@param String $base_url, @param array $body)
+ * @method post_new(@param String $base_url, @param array $body)
+ * @method put_new(@param String $base_url, @param array $body)
+ * @method patch_new(@param String $base_url, @param array $body)
+ */
+class News{
+
+    /**
+     * 方法处理 对 /news 路径的 GET 方式处理，
+     * 获取 news 信息
+     * @param String $base_url 此次请求的基准url example:-> http://localhost/project
+     * @param array $body 请求体(提交参数域)
+     */
+    function get_news($base_url, $body) {
+        $conn = get_connection();
+
+        $length = $body['length'];
+        $start = ($body['cur_page'] -1) * $length;
+
+        $sql = "select * from tb_news order by pub_date desc limit $start, $length;";
+        $result = $conn->query($sql);
+
+        //返回数据集
+        $return_data = array();
+
+        //查询到数据
+        if ($result->num_rows > 0) {
+            //数据放入返回数据集
+            while ($row=$result->fetch_assoc()) {
+                array_push($return_data, $row);
+            }
+        }
+
+        //查询发生错误
+        if (!$result) {
+            $error = $conn->errno . ' ' . $conn->error;
+            echo $error."<br/>";
+        } else {
+            // var_dump($return_data);
+        }
+    }
+
+    /**
+     * 方法处理 对 /news 路径的 GET 方式处理，
+     * 获取 news 信息
+     * @param String $base_url 此次请求的基准url example:-> http://localhost/project
+     * @param array $body 请求体(提交参数域)
+     */
+    function post_news($base_url, $body) {
+        $conn = get_connection();
+        $sql = "insert into tb_news (title, body, pub_date) 
+            values (?, ?, ?);";
+        //预处理及绑定
+        $stmt = $conn->prepare($sql);
+        // var_dump($stmt);
+        if ($stmt) {
+            $stmt->bind_param("sss", $title, $body, $pub_date);
+
+            $title= $body['news_title'];
+            $body = $body['news_body'];
+            $pub_date = $body['news_pub_date'];
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            $error = $conn->errno . ' ' . $conn->error;
+            echo $error."<br/>";
+        }
+        $conn->close();
+    }
+
+    /**
+     * 方法处理 对 /news 路径的 GET 方式处理，
+     * 获取 news 信息
+     * @param String $base_url 此次请求的基准url example:-> http://localhost/project
+     * @param array $body 请求体(提交参数域)
+     */
+    function put_news($base_url, $body) {
+        $conn = get_connection();
+        if (count($body) > 0) {
+            $sql = "update tb_news set ";
+        }
+
+        foreach($body as $k => $v) {
+            $sql = $sql . "$k = '$v',";
+            echo "$k"."=>"."$v"."<br/>";
+        }
+
+        //TODO: 需要修改where条件为动态条件
+        $sql = rtrim($sql, ',')." where news_id = 4;";
+        echo $sql;
+        $conn->query($sql);
+        $conn->close();
+
+    }
+
+    /**
+     * 方法处理 对 /news 路径的 GET 方式处理，
+     * 获取 news 信息
+     * @param String $base_url 此次请求的基准url example:-> http://localhost/project
+     * @param array $body 请求体(提交参数域)
+     */
+    function patch_news($base_url, $body) {
+
+    }
+}
+?>
