@@ -1,0 +1,7 @@
+POST {{baseUrl}}/func HTTP/1.1
+{{contentType}}
+
+{
+    "user_name": "shabulaji",
+    "user_password": "123456"
+}

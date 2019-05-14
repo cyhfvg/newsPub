@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>添加新闻</title>
+    <link rel="stylesheet" href="../../stylesheet/style.css">
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <!-- popper.min.js 用于弹窗、提示、下拉菜单 -->
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <header class="text-center">
+        <h1>新闻发布系统</h1>
+    </header>
+    <nav class="navbar navbar-expand-sm bg-light">
+        <ul class="navbar-nav">
+            <li class="nav-item active"><a class="nav-link" href="./home.html">最新新闻</a></li>
+            <li class="nav-item"><a class="nav-link" href="./publish_news.html">发布新闻</a></li>
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" id="navbar_drop" data-toggle="dropdown">
+                    个人信息
+                </a>
+                <div class="dropdown-menu">
+                    <a href="./user_info.html" class="dropdown-item">显示个人信息</a>
+                    <a href="./user_password_edit.html" class="dropdown-item">修改密码</a>
+                    <a href="#" class="dropdown-item">注销</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <div id="app" class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <form action="">
+                    <div class="form-group">
+                        <label for="news_title">新闻标题</label>
+                        <input v-model="title" type="text" id="news_title"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="news_body">新闻内容</label>
+                        <textarea class="form-control" rows="10" v-model="body" id="news_body"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="reset" value="重置">
+                        </div>
+                        <div class="col">
+                            <input type="button" value="提交" @click="post_news">
+                        </div>
+                        <div class="col">
+                            <a href="#" type="button" class="btn btn-primary">登录</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+</body>
+<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../../javascript/myFunction.js"></script>
+<script type="text/javascript">
+var vm = new Vue ({
+    el: "#app",
+    mounted: function () {
+
+    },
+    data() {
+        return {
+            title: '',
+            body: ''
+        }
+    },
+    methods: {
+        post_news () {
+            let date = get_cur_date();
+            axios({
+                method: 'POST',
+                url: '../../news',
+                data: {
+                    news_title: vm.title,
+                    news_body: vm.body,
+                    news_pub_date: date
+                }
+            })
+            .then(function (res) {
+                console.log(res);
+                window.location.href = "./home.html";
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+        }
+    },
+})
+
+</script>
+</html>

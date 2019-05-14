@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>主页</title>
+    <link rel="stylesheet" href="../../stylesheet/style.css">
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <!-- popper.min.js 用于弹窗、提示、下拉菜单 -->
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <header class="text-center">
+        <h1>新闻发布系统</h1>
+    </header>
+    <nav class="navbar navbar-expand-sm bg-light">
+        <ul class="navbar-nav">
+            <li class="nav-item active"><a class="nav-link" href="./home.html">最新新闻</a></li>
+            <li class="nav-item"><a class="nav-link" href="./publish_news.html">发布新闻</a></li>
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" id="navbar_drop" data-toggle="dropdown">
+                    个人信息
+                </a>
+                <div class="dropdown-menu">
+                    <a href="./user_info.html" class="dropdown-item">显示个人信息</a>
+                    <a href="./user_password_edit.html" class="dropdown-item">修改密码</a>
+                    <a href="#" class="dropdown-item">注销</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <div id="app" class="container">
+        <div class="row">
+            <div class="col">
+                <p>{{ news_body }}</p>
+            </div>
+            <div class="col">
+                <div v-for="(item, index) in news">
+                    <div @click="get_all_news_view(item.news_id, index)">
+                        <div class="row">
+                            <div class="col" style="background:#FFFFE0"><span>{{ item.title }}</span></div>
+                            <div class="col" style="background: #F0F0F0"><span>{{ item.pub_date }}</span></div>
+                        </div>
+                        <div class="row" style="background:#EEE9BF;line-height: 20px;height:40px;overflow: hidden;"><p>{{ item.body }}</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div v-for="review in reviews" style="background:cornsilk">
+                    <span style="background:#C9C9C9">{{ review.review_pub_time }}</span><br/>
+                    <span>{{ review.review_body }}</span><br/><br/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+var vm = new Vue ({
+    el: "#app",
+    mounted: function () {
+        this.get_news(1, 10);
+    },
+    data() {
+        return {
+            user_name: "",
+            curPage: 1,
+            limit: 10,
+            news: {} ,
+            reviews: {} ,
+            curNews: 0,
+            news_body: ''
+        }
+    },
+    methods: {
+        get_news (curPage, limit) {
+            axios.get('../../news', {
+                params: {
+                    curPage: this.curPage,
+                    limit: this.limit
+                }
+            })
+            .then(function (response) {
+                console.log(response);
+                vm.news = response.data;
+            })
+            .catch(function (error) {
+                console.log('error===>' + error);
+            });
+        },
+        get_all_news_view (news_id, news_index) {
+            vm.curNews = news_index;
+            vm.get_news_body(news_index);
+            axios({
+                method: 'GET',
+                url: '../../review',
+                params: {
+                    length: 10,
+                    cur_page: 1,
+                    news_id: news_id
+                }
+            })
+            .then(function (res) {
+                console.log(res);
+                vm.reviews = res.data;
+            })
+        },
+        get_news_body (news_index) {
+            vm.news_body = vm.news[vm.curNews].body;
+        }
+    },
+})
+
+</script>
+</html>

@@ -20,8 +20,8 @@ class News{
     function get_news($base_url, $body) {
         $conn = get_connection();
 
-        $length = $body['length'];
-        $start = ($body['cur_page'] -1) * $length;
+        $length = $body['limit'];
+        $start = ($body['curPage'] - 1) * $length;
 
         $sql = "select * from tb_news order by pub_date desc limit $start, $length;";
         $result = $conn->query($sql);
@@ -42,17 +42,18 @@ class News{
             $error = $conn->errno . ' ' . $conn->error;
             echo $error."<br/>";
         } else {
-            // var_dump($return_data);
+            echo json_encode($return_data);
         }
     }
 
     /**
-     * 方法处理 对 /news 路径的 GET 方式处理，
-     * 获取 news 信息
+     * 方法处理 对 /news 路径的 POST 方式处理，
+     * 创建 news
      * @param String $base_url 此次请求的基准url example:-> http://localhost/project
      * @param array $body 请求体(提交参数域)
      */
     function post_news($base_url, $body) {
+        //TODO:发布新闻时，需要将新闻id插入新闻-用户关系表中
         $conn = get_connection();
         $sql = "insert into tb_news (title, body, pub_date) 
             values (?, ?, ?);";
@@ -60,13 +61,15 @@ class News{
         $stmt = $conn->prepare($sql);
         // var_dump($stmt);
         if ($stmt) {
-            $stmt->bind_param("sss", $title, $body, $pub_date);
+            $stmt->bind_param("sss", $title, $news_body, $pub_date);
 
             $title= $body['news_title'];
-            $body = $body['news_body'];
+            $news_body = $body['news_body'];
             $pub_date = $body['news_pub_date'];
+
             $stmt->execute();
             $stmt->close();
+            echo json_encode(array("status" => "OK"));
         } else {
             $error = $conn->errno . ' ' . $conn->error;
             echo $error."<br/>";
@@ -75,8 +78,8 @@ class News{
     }
 
     /**
-     * 方法处理 对 /news 路径的 GET 方式处理，
-     * 获取 news 信息
+     * 方法处理 对 /news 路径的 PUT 方式处理，
+     * 更新 news 信息
      * @param String $base_url 此次请求的基准url example:-> http://localhost/project
      * @param array $body 请求体(提交参数域)
      */
@@ -100,8 +103,9 @@ class News{
     }
 
     /**
-     * 方法处理 对 /news 路径的 GET 方式处理，
-     * 获取 news 信息
+     * 方法处理 对 /news 路径的 PATCH 方式处理，
+     * 更新 news 信息
+     * !方法弃用
      * @param String $base_url 此次请求的基准url example:-> http://localhost/project
      * @param array $body 请求体(提交参数域)
      */

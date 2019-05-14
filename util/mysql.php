@@ -18,12 +18,12 @@ function get_connection() {
 
     $conn = mysqli_connect($server_name, $user_name, $password, $db_name, $port);
     if (!$conn) {
-        echo $server_name.$db_name;
+        // echo $server_name.$db_name;
         die("Connection failed: " . mysqli_connect_error());
     } else {
         //获得连接成功 设置字符集为utf8
         mysqli_set_charset($conn, 'utf8');
-        echo "<br/>/util/mysql.php === 连接成功<br/>";
+        // echo "<br/>/util/mysql.php === 连接成功<br/>";
     }
     return $conn;
 }

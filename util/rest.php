@@ -13,6 +13,7 @@ function get_request() {
     if (is_get()) {
         $result['type'] = 'get_';
         $result['body'] = get_request_body();
+        // $result['body'] = $_GET;
     } else if(is_post()) {
         $result['type'] = 'post_';
         $result['body'] = get_request_body();
@@ -39,9 +40,9 @@ function get_request_body() {
     $data_obj = json_decode($data);
     $data_arr = json_decode($data, true);
     //生产模式
-    echo "/util/rest.php===请求参数：<br/>";
-    var_dump($data_arr);
-    echo "<br/>";
+    // echo "/util/rest.php===请求参数：<br/>";
+    // var_dump($data_arr);
+    // echo "<br/>";
     return $data_arr;
 }
 

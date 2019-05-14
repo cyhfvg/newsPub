@@ -18,7 +18,7 @@ GET {{baseUrl}}/account HTTP/1.1
 
 {
     "user_name": "shabulaji",
-    "password": "123456"
+    "user_password": "123456"
 }
 
 ###
@@ -27,6 +27,9 @@ PUT {{baseUrl}}/account HTTP/1.1
 
 {
     "sex": "女",
+    "age": "11",
     "phone": "12345543211",
-    "address": "cslg"
+    "email": "123@qq.com",
+    "job": "job",
+    "address": "test"
 }

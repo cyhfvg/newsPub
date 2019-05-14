@@ -1,0 +1,24 @@
+POST {{baseUrl}}/review HTTP/1.1
+{{contentType}}
+
+{
+    "review_body": "It's a review body test, it has more than you think the number.",
+    "review_pub_time": "2019-05-22 14:41:46"
+}
+
+###
+GET {{baseUrl}}/review HTTP/1.1
+{{contentType}}
+
+{
+    "length": 10,
+    "cur_page": 1
+}
+
+###
+PUT {{baseUrl}}/review HTTP/1.1
+{{contentType}}
+
+{
+    "review_body": "news body part"
+}

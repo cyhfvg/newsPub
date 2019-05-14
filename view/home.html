@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>主页</title>
+    <link rel="stylesheet" href="../stylesheet/style.css">
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <!-- popper.min.js 用于弹窗、提示、下拉菜单 -->
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <header class="text-center">
+        <h1>新闻发布系统</h1>
+    </header>
+    <nav class="navbar navbar-expand-sm bg-light">
+        <ul class="navbar-nav">
+            <li class="nav-item active"><a class="nav-link" href="./home.html">最新新闻</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="file_bar" data-toggle="dropdown" href="#">
+                    文件管理
+                </a>
+                <div class="dropdown-menu">
+                    <a href="./fileManager.html" class="dropdown-item">文件上传</a>
+                    <a href="./fileManager.html" class="dropdown-item">文件下载</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" id="navbar_drop" data-toggle="dropdown">
+                    个人信息
+                </a>
+                <div class="dropdown-menu">
+                    <a href="./user_info.html" class="dropdown-item">显示个人信息</a>
+                    <a href="./user_password_edit.html" class="dropdown-item">修改密码</a>
+                    <a href="#" class="dropdown-item">注销</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <div id="app" class="container">
+        <div class="row">
+            <!-- *左边栏 显示指定新闻主体 -->
+            <div class="col">
+                <p>{{ news_body }}</p>
+            </div>
+            <!-- *中间栏 显示新闻简介 -->
+            <div class="col">
+                <div v-for="(item, index) in news">
+                    <div @click="get_reviews(item.news_id, index)">
+                        <div class="row">
+                            <div class="col" style="background:#FFFFE0"><span>{{ item.title }}</span></div>
+                            <div class="col" style="background: #F0F0F0"><span>{{ item.pub_date }}</span></div>
+                        </div>
+                        <div class="row" style="background:#EEE9BF;line-height: 20px;height: 40px;overflow: hidden;"><p>{{ item.body }}</p></div>
+                    </div>
+                </div>
+            </div>
+            <!-- *右边栏用于显示指定新闻所有的评论 发布评论 -->
+            <div class="col">
+                <div class="form-group">
+                    <label for="review_body">发布评论</label>
+                    <input v-model="review_body" type="text" />
+                    <button value="go" class="btn" @click="push_review">go</button>
+                </div>
+                <div v-for="review in reviews" style="background:cornsilk">
+                    <span style="background:#C9C9C9">{{ review.review_pub_time }}</span><br/>
+                    <span>{{ review.review_body }}</span><br/><br/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../javascript/myFunction.js"></script>
+<script type="text/javascript">
+var vm = new Vue ({
+    el: "#app",
+    mounted: function () {
+        this.get_news(1, 10);
+    },
+    data() {
+        return {
+            // 当前登录用户名
+            user_name: "",
+            // curPage 标识当前分页页码
+            curPage: 1,
+            // limit 标识一个分页显示新闻数量
+            limit: 10,
+            // 新闻列表载体
+            news: {} ,
+            // 对应指定新闻的评论列表载体
+            reviews: {},
+            // 指定新闻的新闻具体信息
+            news_body: '',
+            // 评论的具体信息
+            review_body: '',
+            // curNews 标识聚焦的新闻列表下标
+            curNews: 0
+        }
+    },
+    methods: {
+        // 函数获取指定数量的新闻条目
+        get_news (curPage, limit) {
+            axios.get('../news', {
+                params: {
+                    curPage: this.curPage,
+                    limit: this.limit
+                }
+            })
+            .then(function (response) {
+                console.log(response);
+                vm.news = response.data;
+            })
+            .catch(function (error) {
+                console.log('error===>' + error);
+            });
+        },
+        // 函数获取指定新闻的评论
+        get_reviews (news_id, news_index) {
+            vm.curNews = news_index;
+            vm.get_news_body(news_index);
+            axios({
+                method: 'GET',
+                url: '../review',
+                params: {
+                    length: 10,
+                    cur_page: 1,
+                    news_id: news_id
+                }
+            })
+            .then(function (res) {
+                console.log(res);
+                vm.reviews = res.data;
+            })
+        },
+        get_news_body () {
+            vm.news_body = vm.news[vm.curNews].body;
+        },
+        // 用户发布一条评论
+        push_review () {
+            let review_pub_time = get_cur_date();
+            if (vm.review_body !== '') {
+                axios({
+                    method: 'POST',
+                    url: '../review',
+                    data: {
+                        news_id: vm.news[vm.curNews].news_id,
+                        review_body: vm.review_body,
+                        review_pub_time: review_pub_time
+                    }
+                })
+                .then(function (res) {
+                    console.log(res);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+                vm.review_body = '';
+            }
+        }
+    },
+})
+
+</script>
+</html>

@@ -4,17 +4,13 @@ POST {{baseUrl}}/news HTTP/1.1
 {
     "news_title": "newsTitle test",
     "news_body": "It's a news body test, it has more than you think the number.",
-    "pub_date": "2019-05-22 14:41:46"
+    "news_pub_date": "2019-05-22 14:41:46"
 }
 
 ###
 GET {{baseUrl}}/news HTTP/1.1
-{{contentType}}
-
-{
-    "length": 10,
-    "cur_page": 1
-}
+    ?limit=10
+    &curPage=1
 
 ###
 PUT {{baseUrl}}/news HTTP/1.1

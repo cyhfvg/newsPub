@@ -16,6 +16,9 @@ class User {
      * @param array $body 请求体
      */
     function get_user($base_url, $body) {
+        //打印
+        // var_dump($body);
+
         $conn = get_connection();
         $sql = "select * from tb_user where user_name=? and password=?;";
         $stmt = $conn->prepare($sql);
@@ -25,14 +28,15 @@ class User {
             $stmt->bind_param("ss", $user_name, $password);
 
             $user_name = $body['user_name'];
-            $password = $body['password'];
+            $password = $body['user_password'];
 
             //绑定结果集 列->变量 未取数据
             $stmt->bind_result($user_name,$password,$sex,$age,$phone,$email,$job,$address);
             //执行预处理语句
             $stmt->execute();
             //从结果集中取数据
-            $stmt->fetch();
+            // $stmt->fetch();
+
             //查询结果集 多条记录
             // while ($stmt->fetch()) {
             //     echo $user_name;
@@ -47,7 +51,7 @@ class User {
             //     'job' => $job,
             //     'address' => $address
             // );
-            if (!empty($sex)) {
+            if ($stmt->fetch()) {
                 $response = array(
                     'user_name' => $user_name,
                     'sex' => $sex,
@@ -58,9 +62,16 @@ class User {
                     'address' => $address
                 );
                 //处理返回客户端
-                var_dump($response);
+                // var_dump($response);
+                $sql = "select role_id from tb_u_r where user_name = $user_name;";
+                $result =  $conn->query($sql);
+                if ($row -> $result->fetch_assoc()) {
+                    $response['role'] = $row['role_id'];
+                }
+                echo json_encode($response);
             } else {
-                $response = "无此用户";
+                $response = 'error';
+                echo json_encode($response);
             }
         }
         $stmt->close();
@@ -95,6 +106,8 @@ class User {
             $address = $body['user_address'];
             $stmt->execute();
             $stmt->close();
+            var_dump($body);
+            echo json_encode(array("status" => "OK"));
         } else {
             $error = $conn->errno . ' ' . $conn->error;
             echo $error."<br/>";
@@ -117,11 +130,15 @@ class User {
         
         //拼接需要修改的属性 $sql
         foreach($body as $k => $v) {
-            $sql = $sql . "$k = '$v',"; 
-            echo "$k"."=>"."$v"."<br/>";
+            if ($k != 'auth_user_name' && $k != 'auth_user_password') {
+                $sql = $sql . "$k = '$v',"; 
+                // echo "$k"."=>"."$v"."<br/>";
+            }
         }
         //TODO: 需要修改where条件为动态条件
-        $sql = rtrim($sql, ',')." where user_name='shabulaji';";
+        $auth_user_name = $body['auth_user_name'];
+        $auth_user_password = $body['auth_user_password'];
+        $sql = rtrim($sql, ',')." where user_name='$auth_user_name' and password='$auth_user_password';";
         echo $sql;
         $conn->query($sql);
         $conn->close();

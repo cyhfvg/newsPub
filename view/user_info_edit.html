@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>修改个人信息</title>
+    <link rel="stylesheet" href="../stylesheet/style.css">
+    <!-- 新 Bootstrap4 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <!-- popper.min.js 用于弹窗、提示、下拉菜单 -->
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+        <div class="text-center">
+            <h2>新闻发布系统</h2>
+        </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div id="app" class="col">
+                <form class="form-group" action="../account" method="POST" enctype="application/json">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">用户名</span>
+                        </div>
+                        <input type="text" class="form-control" name="user_name" v-model="user_name"/>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">性别</span>
+                        </div>
+                        <div class="form-control">
+                            <label class="radio-inline"><input type="radio" name="user_sex" v-model="user_sex" value="男" checked="checked">男</label>
+                            <label class="radio-inline"><input type="radio" name="user_sex" v-model="user_sex" value="女" >女</label>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">年龄</span>
+                        </div>
+                        <input type="text" class="form-control" name="user_age" v-model="user_age" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">联系电话</span>
+                        </div>
+                        <input type="text" class="form-control" name="user_phone" v-model="user_phone" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">电子邮箱</span>
+                        </div>
+                        <input type="text" class="form-control" name="user_email" v-model="user_email" />
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">职业</span>
+                        </div>
+                        <input type="text" class="form-control" name="user_job" v-model="user_job" />
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">通信地址</span>
+                        </div>
+                        <input type="text" class="form-control" name="user_address" v-model="user_address" />
+                    </div>
+
+                    <div class="btn-group row">
+                        <div class="col">
+                            <input type="reset" class="btn" value="重置">
+                        </div>
+                        <div class="col">
+                            <input type="button" value="提交" class="btn btn-primary" @click="confirm_edit">
+                        </div>
+                        <div class="col">
+                            <input type="button" value="取消" class="btn btn-primary" @click="cancel">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+</body>
+<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+var vm = new Vue ({
+    el: "#app",
+    mounted: function() {
+        this.init();
+    },
+    data() {
+        return {
+            user_name: "",
+            user_password: "",
+            user_sex: "男",
+            user_age: "",
+            user_phone: "",
+            user_email: "",
+            user_job: "",
+            user_address: ""
+        }
+    },
+    methods: {
+        init() {
+            axios({
+                method: 'POST',
+                url: '../func',
+                data: {
+                    user_name: 'shabulaji',
+                    user_password: '123456'
+                }
+            })
+            .then(function (response) {
+                let result = response.data;
+                vm.user_name = result.user_name;
+                vm.user_sex = result.sex;
+                vm.user_age = result.age;
+                vm.user_phone = result.phone;
+                vm.user_email = result.email;
+                vm.user_job = result.job;
+                vm.user_address = result.address;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        cancel() {
+            window.location.href = "./home.html";
+        },
+        confirm_edit() {
+            axios({
+                method: 'PUT',
+                url: '../account',
+                data: {
+                    sex: this.user_sex,
+                    age: this.user_age,
+                    phone: this.user_phone,
+                    email: this.user_email,
+                    job: this.user_job,
+                    address: this.user_address
+                }
+
+            })
+            .then(function (response) {
+                console.log(response);
+                window.location.href = './user_info.html';
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+
+    },
+})
+
+</script>
+</html>
