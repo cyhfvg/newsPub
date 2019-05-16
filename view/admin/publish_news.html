@@ -5,18 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>添加新闻</title>
-    <link rel="stylesheet" href="../../stylesheet/style.css">
+    <!-- <link rel="stylesheet" href="../../stylesheet/style.css"> -->
     <!-- 新 Bootstrap4 核心 CSS 文件 -->
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css"> -->
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <!-- <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script> -->
     <!-- popper.min.js 用于弹窗、提示、下拉菜单 -->
-    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <!-- <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script> -->
     <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <!-- <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script> -->
+    <link rel="stylesheet" href="../../stylesheet/bootstrap.min.css">
+    <script src="../../javascript/jquery.min.js"></script>
+    <script src="../../javascript/popper.min.js"></script>
+    <script src="../../javascript/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../stylesheet/style.css">
 
 </head>
 <body>
+    <div id="app">
     <header class="text-center">
         <h1>新闻发布系统</h1>
     </header>
@@ -24,19 +30,10 @@
         <ul class="navbar-nav">
             <li class="nav-item active"><a class="nav-link" href="./home.html">最新新闻</a></li>
             <li class="nav-item"><a class="nav-link" href="./publish_news.html">发布新闻</a></li>
-            <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" id="navbar_drop" data-toggle="dropdown">
-                    个人信息
-                </a>
-                <div class="dropdown-menu">
-                    <a href="./user_info.html" class="dropdown-item">显示个人信息</a>
-                    <a href="./user_password_edit.html" class="dropdown-item">修改密码</a>
-                    <a href="#" class="dropdown-item">注销</a>
-                </div>
-            </li>
+            <li class="nav-item dropdown"> <a class="nav-link" @click="logout">注销</a> </li>
         </ul>
     </nav>
-    <div id="app" class="container">
+    <div class="container back-color">
         <div class="row">
             <div class="col"></div>
             <div class="col">
@@ -65,9 +62,13 @@
             <div class="col"></div>
         </div>
     </div>
+</div>
 </body>
-<script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+<script src="../../javascript/vue.js"></script>
+<script src="../../javascript/axios.min.js"></script>
+
 <script src="../../javascript/myFunction.js"></script>
 <script type="text/javascript">
 var vm = new Vue ({
@@ -103,6 +104,16 @@ var vm = new Vue ({
             .catch(function (err) {
                 console.log(err);
             });
+        },
+        logout () {
+            console.log('logout');
+            axios({
+                method: 'DELETE',
+                url: '../func'
+            })
+            .then(function (res) {
+                window.location.href = '../login.html';
+            })
         }
     },
 })
