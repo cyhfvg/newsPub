@@ -16,6 +16,8 @@ function auth (get_url, location_url) {
             window.location.href = location_url;
         } else if (res.data.auth == 'pass') {
             console.log('身份验证成功');
+            console.log(res.data.user_name);
+            console.log(res.data.user_password);
         }
     })
     .catch(function (err) {

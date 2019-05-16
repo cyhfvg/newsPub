@@ -35,7 +35,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">密码</span>
                         </div>
-                        <input type="text" class="form-control" v-model="user_password" name="user_password" />
+                        <input type="password" class="form-control" v-model="user_password" name="user_password" />
                     </div>
                     <div class="btn-group row">
                         <div class="col">
@@ -64,7 +64,6 @@ var vm = new Vue ({
         return {
             user_name: "",
             user_password: "",
-            href: window.location.href,
         }
     },
     methods: {
@@ -84,6 +83,7 @@ var vm = new Vue ({
                 } else if (response.data.role_id == 0) {
                     window.location.href = './admin/home.html';
                 }
+
             })
             .catch(function (error) {
                 console.log(error);

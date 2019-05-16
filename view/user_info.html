@@ -95,13 +95,32 @@
 var vm = new Vue ({
     el: "#login_div",
     beforeCreate: function () {
-        auth('../auth', './login.html');
+        // auth('../auth', './login.html');
     },
     mounted: function() {
-        this.init();
+        axios({
+            method: 'GET',
+            url: '../auth'
+        })
+        .then(function (res) {
+            if (res.data.auth == 'none') {
+                window.location.href = './login.html';
+            } else if (res.data.auth == 'pass') {
+                // console.log(res);
+                vm.user_name = res.data.user_name;
+                vm.user_password = res.data.user_password;
+                // console.log(vm.user_password);
+                vm.init();
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+        })
+
     },
     data: {
             user_name: "",
+            user_password: "",
             user_sex: "男",
             user_age: "",
             user_phone: "",
@@ -115,8 +134,8 @@ var vm = new Vue ({
                 method: 'POST',
                 url: '../func',
                 data: {
-                    user_name: 'shabulaji',
-                    user_password: '123456'
+                    user_name: vm.user_name,
+                    user_password: vm.user_password
                 }
             })
             .then(function (response) {

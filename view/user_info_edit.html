@@ -21,7 +21,7 @@
             <h2>新闻发布系统</h2>
         </div>
 
-    <div class="container">
+    <div class="container back-color">
         <div class="row">
             <div class="col"></div>
             <div id="app" class="col">
@@ -108,10 +108,10 @@ var vm = new Vue ({
             if (res.data.auth == 'none') {
                 window.location.href = './login.html';
             } else if (res.data.auth == 'pass') {
-                console.log(res);
+                // console.log(res);
                 vm.user_name = res.data.user_name;
                 vm.user_password = res.data.user_password;
-                console.log(vm.user_password);
+                // console.log(vm.user_password);
                 vm.init();
             }
         })

@@ -69,17 +69,19 @@ class User {
         $stmt->close();
 
         //处理返回客户端
-        $response['role_id'] = 1;
-        $sql = "select role_id from tb_u_r where user_name = '$user_name';";
-        $result =  $conn->query($sql);
-        if ($row = $result->fetch_assoc()) {
-            $response['role_id'] = $row['role_id'];
-        }
+        if (isset($response['user_name'])) {
+            $response['role_id'] = 1;
+            $sql = "select role_id from tb_u_r where user_name = '$user_name';";
+            $result =  $conn->query($sql);
+            if ($row = $result->fetch_assoc()) {
+                $response['role_id'] = $row['role_id'];
+            }
 
-        // * 验证身份成功则保存session
-        session_start();
-        $_SESSION['user_name'] = $response['user_name'];
-        $_SESSION['user_password'] = $password;
+            // * 验证身份成功则保存session
+            session_start();
+            $_SESSION['user_name'] = $response['user_name'];
+            $_SESSION['user_password'] = $password;
+        }
 
         echo json_encode($response);
         $conn->close();
