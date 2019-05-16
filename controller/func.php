@@ -17,5 +17,10 @@ class Func {
         $user->get_user($base_url, $body);
     }
 
+    function delete_pass_api_get_user ($base_url, $body) {
+        session_start();
+        unset($_SESSION['user_name']);
+    }
+
 }
 ?>

@@ -29,6 +29,11 @@ return array (
         'file_name' => '/controller/file.php',
         'class_name' => 'FileManager',
         'method_name' => 'file'
+    ),
+    '/auth' => array(
+        'file_name' => '/controller/auth.php',
+        'class_name' => 'Auth',
+        'method_name' => 'auth'
     )
 );
 ?>

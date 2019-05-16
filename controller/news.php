@@ -23,7 +23,8 @@ class News{
         $length = $body['limit'];
         $start = ($body['curPage'] - 1) * $length;
 
-        $sql = "select * from tb_news order by pub_date desc limit $start, $length;";
+        // $sql = "select * from tb_news order by pub_date desc limit $start, $length;";
+        $sql = "select * from tb_news order by pub_date desc;";
         $result = $conn->query($sql);
 
         //返回数据集
@@ -53,7 +54,6 @@ class News{
      * @param array $body 请求体(提交参数域)
      */
     function post_news($base_url, $body) {
-        //TODO:发布新闻时，需要将新闻id插入新闻-用户关系表中
         $conn = get_connection();
         $sql = "insert into tb_news (title, body, pub_date) 
             values (?, ?, ?);";
@@ -69,6 +69,18 @@ class News{
 
             $stmt->execute();
             $stmt->close();
+
+            $sql = "select last_insert_id();";
+            $result = $conn->query($sql);
+            $news_id = "";
+            if ($row = $result->fetch_assoc()) {
+                $news_id = $row['last_insert_id()'];
+            }
+
+            session_start();
+            $user_name = $_SESSION['user_name'];
+            $sql = "insert into tb_u_n (user_name, news_id) values('$user_name', $news_id);";
+            $conn->query($sql);
             echo json_encode(array("status" => "OK"));
         } else {
             $error = $conn->errno . ' ' . $conn->error;

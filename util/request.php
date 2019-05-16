@@ -7,6 +7,7 @@
  * @return string 提交表单的HTML文本
  */
 function do_request($url, $data, $method = 'POST') {
+    header("Content-Type: text/html; charset=utf-8");
     $sHtml = "<form id='requestForm' name='requestForm' action='".$url."' method='".$method."' enctype='application/json'>";
     // 将参数信息 写入input中 name=key，value=value
     while (list ($key, $val) = each ($data)) {
@@ -16,7 +17,8 @@ function do_request($url, $data, $method = 'POST') {
     $sHtml = $sHtml."<input type='submit' value='确定' style='display:none;'></form>";
     //写一个script 自动提交表单
     $sHtml = $sHtml."<script>document.getElementById('requestForm').submit();</script>";
-    echo $sHtml;
+    // echo $sHtml;
+    echo htmlentities($sHtml,ENT_QUOTES,"UTF-8");
     return $sHtml;
 }
 

@@ -92,11 +92,33 @@
 </body>
 <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../javascript/myFunction.js"></script>
 <script type="text/javascript">
 var vm = new Vue ({
     el: "#app",
+    created: function () {
+
+    },
     mounted: function() {
-        this.init();
+        axios({
+            method: 'GET',
+            url: '../auth'
+        })
+        .then(function (res) {
+            if (res.data.auth == 'none') {
+                window.location.href = './login.html';
+            } else if (res.data.auth == 'pass') {
+                console.log(res);
+                vm.user_name = res.data.user_name;
+                vm.user_password = res.data.user_password;
+                console.log(vm.user_password);
+                vm.init();
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+        })
+
     },
     data() {
         return {
@@ -116,8 +138,8 @@ var vm = new Vue ({
                 method: 'POST',
                 url: '../func',
                 data: {
-                    user_name: 'shabulaji',
-                    user_password: '123456'
+                    user_name: vm.user_name,
+                    user_password: vm.user_password
                 }
             })
             .then(function (response) {

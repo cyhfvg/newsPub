@@ -90,9 +90,13 @@
 </body>
 <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../javascript/myFunction.js"></script>
 <script type="text/javascript">
 var vm = new Vue ({
     el: "#login_div",
+    beforeCreate: function () {
+        auth('../auth', './login.html');
+    },
     mounted: function() {
         this.init();
     },

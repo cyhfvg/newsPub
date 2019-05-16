@@ -4,3 +4,21 @@ function get_cur_date() {
     myDateString = myDateString + myDate.getHours() + ":" + myDate.getMinutes() + ":" + myDate.getSeconds();
     return myDateString;
 }
+function auth (get_url, location_url) {
+    axios({
+        method: 'GET',
+        url: get_url,
+        async:false,
+    })
+    .then(function (res) {
+        // console.log(res);
+        if (res.data.auth == 'none') {
+            window.location.href = location_url;
+        } else if (res.data.auth == 'pass') {
+            console.log('身份验证成功');
+        }
+    })
+    .catch(function (err) {
+        console.log(err);
+    })
+}

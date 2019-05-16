@@ -57,7 +57,7 @@
                             <input type="button" value="提交" @click="post_news">
                         </div>
                         <div class="col">
-                            <a href="#" type="button" class="btn btn-primary">登录</a>
+                            <a href="./home.html" type="button" class="btn btn-primary">取消</a>
                         </div>
                     </div>
                 </form>
@@ -72,6 +72,9 @@
 <script type="text/javascript">
 var vm = new Vue ({
     el: "#app",
+    beforeCreate: function () {
+        auth('../../auth', '../login.html');
+    },
     mounted: function () {
 
     },

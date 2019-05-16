@@ -27,6 +27,7 @@ class Review {
         $sql = "select tb_review.review_id,review_body,review_pub_time
                 from tb_review,tb_n_rev,tb_news 
                 where tb_news.news_id= tb_n_rev.news_id 
+                and tb_n_rev.review_id = tb_review.review_id
                 and tb_news.news_id= $news_id
                 GROUP BY tb_review.review_id
                 order by review_pub_time 

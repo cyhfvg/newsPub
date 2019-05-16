@@ -1,13 +1,13 @@
 <?php
 //权限控制
-// include_once(dirname(__FILE__).'./auth.php');
+include_once(dirname(__FILE__).'./auth.php');
 //项目根目录
 date_default_timezone_set("Asia/Shanghai");
 header("Content-type:text/html;charset=utf-8");
 //项目根目录
 define("BASE_PATH", dirname(__FILE__));
 //调试模式
-define('APP_DEBUG', TRUE);
+// define('APP_DEBUG', TRUE);
 //引入配置文件
 include_once BASE_PATH.'/config/config.php';
 //路由控制
@@ -16,10 +16,11 @@ $router = include_once BASE_PATH.'/router/router.php';
 $req_path = get_request_path();
 $request_path = $req_path['request_path'];
 $project = $req_path['project'];
+$base_url = 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].'/'.$project;
 
-// if ($request_path != '/') {
-//     get_auth();
-// }
+if ($request_path != '/') {
+    // get_auth($base_url);
+}
 
 // echo $request_path.'<br/>';
 if (array_key_exists($request_path, $router)) {
@@ -37,7 +38,7 @@ if (array_key_exists($request_path, $router)) {
             die('调用方法不存在!');
         } else {
             if (is_callable(array($obj_module, $method_name))) {
-                $base_url = 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].'/'.$project;
+                // $base_url = 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].'/'.$project;
                 //如果是get方式传参，则将参数键值对传入body
                 if (!empty($req_path['get_body'])) {
                     $request['body'] = $req_path['get_body'];
@@ -80,7 +81,6 @@ function get_request_path() {
     $project = $url[1];
     $req_path['project'] = $url[1];
     $url[1] = '';
-    // var_dump($url);
     array_shift($url);
 
     //获取请求url
@@ -88,7 +88,6 @@ function get_request_path() {
     $request_path = str_replace('index.php', '', $request_path);
 
     $req_path['request_path'] = $request_path;
-    // var_dump($req_path);
     return $req_path;
 }
 ?>

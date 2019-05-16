@@ -17,6 +17,7 @@
 
 </head>
 <body>
+<div id="app">
     <header class="text-center">
         <h1>新闻发布系统</h1>
     </header>
@@ -24,19 +25,10 @@
         <ul class="navbar-nav">
             <li class="nav-item active"><a class="nav-link" href="./home.html">最新新闻</a></li>
             <li class="nav-item"><a class="nav-link" href="./publish_news.html">发布新闻</a></li>
-            <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" id="navbar_drop" data-toggle="dropdown">
-                    个人信息
-                </a>
-                <div class="dropdown-menu">
-                    <a href="./user_info.html" class="dropdown-item">显示个人信息</a>
-                    <a href="./user_password_edit.html" class="dropdown-item">修改密码</a>
-                    <a href="#" class="dropdown-item">注销</a>
-                </div>
-            </li>
+            <li class="nav-item dropdown"> <a class="nav-link" @click="logout">注销</a> </li>
         </ul>
     </nav>
-    <div id="app" class="container">
+    <div  class="container">
         <div class="row">
             <div class="col">
                 <p>{{ news_body }}</p>
@@ -61,12 +53,17 @@
             </div>
         </div>
     </div>
+</div>
 </body>
 <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="../../javascript/myFunction.js"></script>
 <script type="text/javascript">
 var vm = new Vue ({
     el: "#app",
+    beforeCreate: function () {
+        auth('../../auth', '../login.html');
+    },
     mounted: function () {
         this.get_news(1, 10);
     },
@@ -116,8 +113,19 @@ var vm = new Vue ({
         },
         get_news_body (news_index) {
             vm.news_body = vm.news[vm.curNews].body;
+        },
+        logout () {
+            console.log('logout');
+            axios({
+                method: 'DELETE',
+                url: '../func'
+            })
+            .then(function (res) {
+                window.location.href = '../login.html'
+            })
         }
     },
+
 })
 
 </script>

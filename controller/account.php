@@ -51,6 +51,7 @@ class User {
             //     'job' => $job,
             //     'address' => $address
             // );
+            $response = array();
             if ($stmt->fetch()) {
                 $response = array(
                     'user_name' => $user_name,
@@ -61,20 +62,26 @@ class User {
                     'job' => $job,
                     'address' => $address
                 );
-                //处理返回客户端
-                // var_dump($response);
-                $sql = "select role_id from tb_u_r where user_name = $user_name;";
-                $result =  $conn->query($sql);
-                if ($row -> $result->fetch_assoc()) {
-                    $response['role'] = $row['role_id'];
-                }
-                echo json_encode($response);
             } else {
                 $response = 'error';
-                echo json_encode($response);
             }
         }
         $stmt->close();
+
+        //处理返回客户端
+        $response['role_id'] = 1;
+        $sql = "select role_id from tb_u_r where user_name = '$user_name';";
+        $result =  $conn->query($sql);
+        if ($row = $result->fetch_assoc()) {
+            $response['role_id'] = $row['role_id'];
+        }
+
+        // * 验证身份成功则保存session
+        session_start();
+        $_SESSION['user_name'] = $response['user_name'];
+        $_SESSION['user_password'] = $password;
+
+        echo json_encode($response);
         $conn->close();
     }
 
@@ -106,7 +113,6 @@ class User {
             $address = $body['user_address'];
             $stmt->execute();
             $stmt->close();
-            var_dump($body);
             echo json_encode(array("status" => "OK"));
         } else {
             $error = $conn->errno . ' ' . $conn->error;
@@ -135,9 +141,10 @@ class User {
                 // echo "$k"."=>"."$v"."<br/>";
             }
         }
-        //TODO: 需要修改where条件为动态条件
-        $auth_user_name = $body['auth_user_name'];
-        $auth_user_password = $body['auth_user_password'];
+
+        session_start();
+        $auth_user_name = $_SESSION['user_name'];
+        $auth_user_password = $_SESSION['user_password'];
         $sql = rtrim($sql, ',')." where user_name='$auth_user_name' and password='$auth_user_password';";
         echo $sql;
         $conn->query($sql);

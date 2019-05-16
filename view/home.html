@@ -17,6 +17,7 @@
 
 </head>
 <body>
+<div id="app">
     <header class="text-center">
         <h1>新闻发布系统</h1>
     </header>
@@ -39,12 +40,12 @@
                 <div class="dropdown-menu">
                     <a href="./user_info.html" class="dropdown-item">显示个人信息</a>
                     <a href="./user_password_edit.html" class="dropdown-item">修改密码</a>
-                    <a href="#" class="dropdown-item">注销</a>
+                    <button class="dropdown-item" @click="logout">注销</button>
                 </div>
             </li>
         </ul>
     </nav>
-    <div id="app" class="container">
+    <div  class="container">
         <div class="row">
             <!-- *左边栏 显示指定新闻主体 -->
             <div class="col">
@@ -52,7 +53,7 @@
             </div>
             <!-- *中间栏 显示新闻简介 -->
             <div class="col">
-                <div v-for="(item, index) in news">
+                <div v-for="(item, index) in news_limit">
                     <div @click="get_reviews(item.news_id, index)">
                         <div class="row">
                             <div class="col" style="background:#FFFFE0"><span>{{ item.title }}</span></div>
@@ -76,7 +77,15 @@
 
             </div>
         </div>
+        <div class="row">
+            <ul class="pagination">
+                <div v-for="n in news_num">
+                    <li class="page-item"><a class="page-link" @click="changePage(n)">{{ n }}</a></li>
+                </div>
+            </ul>
+        </div>
     </div>
+</div>
 </body>
 <script src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -84,6 +93,9 @@
 <script type="text/javascript">
 var vm = new Vue ({
     el: "#app",
+    beforeCreate: function () {
+        auth('../auth', './login.html');
+    },
     mounted: function () {
         this.get_news(1, 10);
     },
@@ -96,7 +108,7 @@ var vm = new Vue ({
             // limit 标识一个分页显示新闻数量
             limit: 10,
             // 新闻列表载体
-            news: {} ,
+            news: [] ,
             // 对应指定新闻的评论列表载体
             reviews: {},
             // 指定新闻的新闻具体信息
@@ -104,7 +116,16 @@ var vm = new Vue ({
             // 评论的具体信息
             review_body: '',
             // curNews 标识聚焦的新闻列表下标
-            curNews: 0
+            curNews: 0,
+            // news_num: 0,
+        }
+    },
+    computed: {
+        news_limit: function () {
+            return this.news.slice((this.curPage-1)*10, (this.curPage)*10);
+        },
+        news_num: function () {
+            return Math.ceil( this.news.length / 10);
         }
     },
     methods: {
@@ -122,6 +143,10 @@ var vm = new Vue ({
             })
             .catch(function (error) {
                 console.log('error===>' + error);
+            if (error.response.data.status_code === 401) {
+                // 错误信息处理
+                console.log('401');
+            }
             });
         },
         // 函数获取指定新闻的评论
@@ -166,6 +191,19 @@ var vm = new Vue ({
                 })
                 vm.review_body = '';
             }
+        },
+        logout () {
+            console.log('logout');
+            axios({
+                method: 'DELETE',
+                url: '../func'
+            })
+            .then(function (res) {
+                window.location.href = './login.html'
+            })
+        },
+        changePage (curPage) {
+            this.curPage = curPage;
         }
     },
 })

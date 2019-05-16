@@ -1,1 +1,4 @@
 GET {{baseUrl}}/index.php
+
+###
+GET http://localhost/newsPub/view/home.html HTTP/1.1

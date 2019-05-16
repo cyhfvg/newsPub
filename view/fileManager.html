@@ -47,7 +47,7 @@
     <div id="app" class="container">
         <div class="row">
             <div class="col">
-                <!-- TODO:此处用于文件上传 -->
+                <!-- 此处用于文件上传 -->
                 <form class="form-group" action='../file' method='post' enctype="multipart/form-data">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
@@ -68,7 +68,7 @@
             </div>
             <div class="col"></div>
             <div class="col">
-                <!-- TODO:此处用于显示已上传文件列表用于下载 -->
+                <!-- 此处用于显示已上传文件列表用于下载 -->
                 <div v-for="item in files">
                     <div>
                         <!-- *v-for 循环 给 超链接 设置 href -->
@@ -85,6 +85,9 @@
 <script type="text/javascript">
 var vm = new Vue ({
     el: "#app",
+    beforeCreate: function () {
+        auth('../auth', './login.html');
+    },
     mounted: function () {
         this.getFileList();
     },
@@ -94,7 +97,7 @@ var vm = new Vue ({
         }
     },
     methods: {
-        // TODO:此函数用于获取已上传文件列表
+        // 获取已上传文件列表
         getFileList () {
             axios({
                 method: 'GET',
