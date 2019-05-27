@@ -23,6 +23,7 @@ function get_connection() {
     } else {
         //获得连接成功 设置字符集为utf8
         mysqli_set_charset($conn, 'utf8');
+        // mysqli_set_charset($conn, 'gbk');
         // echo "<br/>/util/mysql.php === 连接成功<br/>";
     }
     return $conn;

@@ -185,7 +185,7 @@ var vm = new Vue ({
                     method: 'POST',
                     url: '../review',
                     data: {
-                        news_id: vm.news[vm.curNews].news_id,
+                        news_id: vm.news_limit[vm.curNews].news_id,
                         review_body: vm.review_body,
                         review_pub_time: review_pub_time
                     }
